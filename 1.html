@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="./vue.js"></script>
+    <link rel="stylesheet" href="./bootstrap.css">
+</head>
+<body>
+<div id="app">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Todo List</h3>
+        </div>
+        <div class="panel-body form-inline">
+            <label>
+                <input type="text" class="form-control" v-model="todo">
+            </label>
+            <input type="button" value="add" class="btn btn-primary" @click="add">
+        </div>
+    </div>
+    <table class="table table-bordered table-hover table-striped">
+        <tbody>
+        <tr v-for="(todo,id) in filtered">
+            <td>
+                <input type="checkbox" v-model="todo.completed">
+            </td>
+            <td>{{todo.name}}</td>
+            <td><a href="" @click.prevent="del(todo.id)">delete</a></td>
+        </tr>
+        </tbody>
+    </table>
+    <div class="panel panel-primary">
+        <div class="panel-body form-inline">
+            <div>{{ selectedtodo }} items left</div>
+            <input type="button" value="all" class="btn btn-primary" @click="filter = 'all'">
+            <input type="button" value="selected" class="btn btn-primary" @click="filter = 'selected'">
+            <input type="button" value="unselected" class="btn btn-primary" @click="filter = 'unselected'">
+        </div>
+    </div>
+
+</div>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: {
+            filter: 'all',
+            todos: []
+
+        },
+        computed: {
+            selectedtodo() {
+                return this.todos.filter(todo => !todo.completed).length
+
+            },
+            filtered() {
+                if (this.filter == 'all') {
+                    return this.todos
+                } else if (this.filter == 'selected') {
+                    return this.todos.filter(todo => todo.completed)
+                } else if (this.filter == 'unselected') {
+                    return this.todos.filter(todo => !todo.completed)
+                }
+                return this.todos
+            }
+        },
+        methods: {
+            add() {
+
+                this.todos.push(
+                    {
+                        name: this.todo,
+                        completed: false
+                    }
+                )
+                this.todo = ''
+            },
+            del(id) {
+                this.todos.some((todo, i) => {
+                    if (todo.id == id) {
+                        this.todos.splice(i, 1)
+                        return true;
+                    }
+                })
+            }
+
+
+        }
+
+
+    });
+
+</script>
+</body>
+</html>
